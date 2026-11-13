@@ -21,6 +21,11 @@ CREATE TABLE IF NOT EXISTS tasks(
   priority TEXT DEFAULT 'medium' CHECK(priority IN ('low','medium','high')),
   status TEXT DEFAULT 'todo' CHECK(status IN ('todo','in_progress','done')),
   deadline TEXT, created_at TEXT DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE IF NOT EXISTS task_comments(
+  id INTEGER PRIMARY KEY,
+  task_id INTEGER NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
+  user_id INTEGER NOT NULL REFERENCES users(id),
+  body TEXT NOT NULL, created_at TEXT DEFAULT CURRENT_TIMESTAMP);
 CREATE TABLE IF NOT EXISTS messages(
   id INTEGER PRIMARY KEY,
   project_id INTEGER NOT NULL REFERENCES projects(id) ON DELETE CASCADE,

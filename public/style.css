@@ -22,3 +22,19 @@ form>input,form>textarea{flex:1;min-width:140px}
 .msg{margin-bottom:8px}
 #chat{max-height:380px;overflow:auto;margin-bottom:8px}
 .err{color:#dc2626;margin:8px 0}
+.click{cursor:pointer}
+.click:hover{border-color:var(--pri)}
+.nav{display:inline-flex;gap:6px;margin-right:12px}
+header{align-items:center;flex-wrap:wrap;gap:8px}
+.toolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.toolbar>input{flex:1;min-width:160px}
+.board{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-items:start}
+.col{background:var(--bd);border-radius:10px;padding:10px;min-height:120px}
+.col.over{outline:2px dashed var(--pri)}
+.col h4{margin:0 0 8px}
+.col .card{margin-bottom:8px;padding:10px}
+@media(max-width:700px){.board{grid-template-columns:1fr}}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:flex-start;justify-content:center;padding:30px 12px;overflow:auto;z-index:10}
+.modal .box{width:100%;max-width:620px}
+form>.full{flex-basis:100%}
+.msg a{margin-left:6px;font-size:12px}
