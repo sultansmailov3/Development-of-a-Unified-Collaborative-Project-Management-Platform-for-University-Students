@@ -1,6 +1,12 @@
+const fs = require('node:fs');
+const path = require('node:path');
 const Database = require('better-sqlite3');
 
-const db = new Database(process.env.DB_PATH || 'data.db');
+// DB_PATH may point into a mounted volume that does not exist yet.
+const dbPath = process.env.DB_PATH || 'data.db';
+fs.mkdirSync(path.dirname(path.resolve(dbPath)), { recursive: true });
+
+const db = new Database(dbPath);
 db.pragma('foreign_keys = ON');
 db.pragma('journal_mode = WAL');
 

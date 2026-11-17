@@ -1,0 +1,30 @@
+# Blueprint для Render: https://render.com/docs/blueprint-spec
+# Подключите репозиторий через New → Blueprint, и сервис создастся по этому файлу.
+services:
+  - type: web
+    name: teamwork
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: JWT_SECRET
+        generateValue: true     # Render сам создаст длинный случайный ключ
+      - key: NODE_VERSION
+        value: "22"
+
+      # --- Постоянное хранилище ---------------------------------------
+      # На бесплатном плане диска нет: база и файлы стираются при каждом
+      # деплое. Чтобы данные сохранялись, поднимите план до starter,
+      # раскомментируйте блок disk ниже и эти две переменные.
+      # - key: DB_PATH
+      #   value: /var/data/teamwork.db
+      # - key: UPLOAD_DIR
+      #   value: /var/data/uploads
+
+    # disk:
+    #   name: teamwork-data
+    #   mountPath: /var/data
+    #   sizeGB: 1

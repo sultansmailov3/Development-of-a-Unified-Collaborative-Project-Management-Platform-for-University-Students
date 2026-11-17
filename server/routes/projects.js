@@ -6,7 +6,8 @@ const multer = require('multer');
 const db = require('../db');
 const { logActivity } = require('../db');
 
-const UPLOADS = path.join(__dirname, '..', '..', 'uploads');
+// On a host with a mounted volume set UPLOAD_DIR so files survive redeploys.
+const UPLOADS = process.env.UPLOAD_DIR || path.join(__dirname, '..', '..', 'uploads');
 fs.mkdirSync(UPLOADS, { recursive: true });
 
 const upload = multer({

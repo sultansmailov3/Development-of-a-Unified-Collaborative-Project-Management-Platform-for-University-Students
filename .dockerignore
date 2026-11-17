@@ -1,0 +1,11 @@
+node_modules
+.git
+.github
+tests
+uploads
+data.db*
+.env
+*.md
+Dockerfile
+.dockerignore
+render.yaml
