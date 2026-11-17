@@ -27,9 +27,17 @@ before(async () => {
   base = `http://127.0.0.1:${server.address().port}`;
 });
 
-after(() => {
-  server.close();
-  fs.rmSync(workDir, { recursive: true, force: true });
+after(async () => {
+  await new Promise((resolve) => server.close(resolve));
+
+  // Windows refuses to delete the database while SQLite still holds the handle,
+  // so close it first and treat a leftover temp directory as harmless.
+  try { require('../server/db').close(); } catch { /* already closed */ }
+  try {
+    fs.rmSync(workDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 120 });
+  } catch {
+    console.warn(`Временную папку ${workDir} удалить не удалось — её очистит система.`);
+  }
 });
 
 /** Minimal JSON client. */
