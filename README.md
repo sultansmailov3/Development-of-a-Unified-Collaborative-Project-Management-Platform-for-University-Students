@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/sultansmailov3/Development-of-a-Unified-Collaborative-Project-Management-Platform-for-University-Students/actions/workflows/ci.yml/badge.svg)](https://github.com/sultansmailov3/Development-of-a-Unified-Collaborative-Project-Management-Platform-for-University-Students/actions/workflows/ci.yml)
 
+**Развёрнутая версия: https://teamwork-4jf1.onrender.com**
+
 Одно рабочее пространство, где студенческая команда планирует, обсуждает и отслеживает
 групповое задание — вместо переписки в чате, таблицы и общей папки по отдельности.
 
