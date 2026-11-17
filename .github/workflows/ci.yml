@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Тесты на Node ${{ matrix.node }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['20', '22', '24']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Установить Node ${{ matrix.node }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - name: Установить зависимости
+        run: npm install --no-audit --no-fund
+
+      - name: Проверить синтаксис
+        run: |
+          for file in server/*.js server/routes/*.js public/app.js tests/*.js; do
+            node --check "$file"
+          done
+
+      - name: Запустить тесты
+        run: npm test
+
+      - name: Проверить, что сервер стартует
+        run: |
+          JWT_SECRET=ci-check DB_PATH=$(mktemp -d)/ci.db PORT=3123 node server/index.js &
+          pid=$!
+          for i in $(seq 1 25); do
+            if curl -fsS http://127.0.0.1:3123/api/health > /dev/null; then
+              echo "Сервер отвечает"
+              kill $pid
+              exit 0
+            fi
+            sleep 0.4
+          done
+          echo "Сервер не ответил за отведённое время"
+          kill $pid || true
+          exit 1

@@ -1,9 +1,18 @@
 {
   "name": "teamwork",
-  "version": "0.1.0",
-  "description": "Платформа для координации студенческих групповых проектов",
+  "version": "1.0.0",
+  "description": "Платформа для координации студенческих групповых проектов: задачи, канбан-доска, обсуждения и файлы в одном месте",
   "main": "server/index.js",
-  "scripts": { "start": "node server/index.js", "dev": "node --watch server/index.js" },
+  "private": true,
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "test": "node --test tests/"
+  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "better-sqlite3": "^13.0.0",

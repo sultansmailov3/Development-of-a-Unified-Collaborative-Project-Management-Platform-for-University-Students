@@ -1,47 +1,122 @@
-# TeamWork — Unified Collaborative Project Management Platform for University Students
+# TeamWork — платформа для студенческих командных проектов
 
-A platform that helps university students coordinate group projects and manage teamwork in one place.
+[![CI](https://github.com/sultansmailov3/Development-of-a-Unified-Collaborative-Project-Management-Platform-for-University-Students/actions/workflows/ci.yml/badge.svg)](https://github.com/sultansmailov3/Development-of-a-Unified-Collaborative-Project-Management-Platform-for-University-Students/actions/workflows/ci.yml)
 
-## Features
+Одно рабочее пространство, где студенческая команда планирует, обсуждает и отслеживает
+групповое задание — вместо переписки в чате, таблицы и общей папки по отдельности.
 
-- Registration and login (JWT, bcrypt password hashing)
-- Project creation and team management (owner / member roles)
-- Tasks with assignee, priority, status and deadline
-- Project progress tracking (progress bar, overdue highlighting)
-- Team discussion chat (auto-refreshes every 5 seconds)
-- File sharing (up to 10 MB per file)
+## Возможности
 
-## Tech stack
+**Аккаунты и доступ**
+- Регистрация и вход по JWT, пароли хранятся как bcrypt-хеши
+- Защита от подбора пароля: после серии неудачных попыток вход временно блокируется
+- Профиль: смена имени и пароля с подтверждением текущего
+- Светлая и тёмная тема, либо следование настройке системы
 
-Node.js, Express, SQLite (better-sqlite3), vanilla JavaScript frontend.
+**Проекты и команда**
+- Проекты с описанием, прогрессом и счётчиком просроченных задач
+- Три роли: владелец, менеджер, участник — права проверяются на сервере
+- Приглашение по email или по ссылке со сроком действия 7 дней
+- Передача прав владельца, выход из проекта, архивирование и удаление
 
-## Project structure
+**Задачи**
+- Исполнитель, приоритет, срок и статус
+- Канбан-доска с перетаскиванием: мышь, перо, а на тач-экране — долгое нажатие
+- Режим списка со сменой статуса из выпадающего меню — работает везде
+- Поиск, фильтр «только мои», подсветка просроченных
+- Комментарии к задачам
+
+**Совместная работа**
+- Обсуждение проекта с автообновлением раз в 5 секунд
+- Обмен файлами до 10 МБ
+- Лента активности по проекту
+- Личные разделы: «Мои задачи» по всем проектам и «Уведомления» о сроках и событиях
+
+## Технологии
+
+Node.js, Express, SQLite (better-sqlite3), JWT, bcrypt, multer.
+Фронтенд — на чистом JavaScript, без сборки и без зависимостей.
+Тесты — на встроенном в Node раннере `node:test`, поэтому `npm test` не требует
+дополнительных пакетов.
+
+## Структура
 
 ```
 server/
-  index.js            # Express entry point
-  auth.js             # JWT helpers and auth middleware
-  db.js               # SQLite schema
-  routes/auth.js      # /api/auth  (register, login, me)
-  routes/projects.js  # /api/projects (projects, members, tasks, messages, files)
-public/               # frontend (index.html, app.js, style.css)
-uploads/              # uploaded files (git-ignored)
+  index.js            точка входа, статика, заголовки безопасности, SPA-фолбэк
+  auth.js             JWT, middleware авторизации, ограничитель попыток входа
+  db.js               схема SQLite, миграции, журнал активности
+  routes/auth.js      /api/auth — регистрация, вход, профиль, смена пароля
+  routes/projects.js  /api/projects — проекты, команда, задачи, файлы, активность
+public/
+  index.html          оболочка приложения
+  app.js              весь интерфейс: роутинг, экраны, drag-and-drop
+  style.css           дизайн-система и тёмная тема
+tests/
+  api.test.js         сквозные тесты API
+uploads/              загруженные файлы (не попадают в git)
 ```
 
-## Run locally
+## Запуск
+
+Нужен Node.js 20 или новее.
 
 ```bash
 npm install
-cp .env.example .env     # then set JWT_SECRET to a long random string
+cp .env.example .env     # на Windows: copy .env.example .env
 npm start                # http://localhost:3000
 ```
 
-For development with auto-reload: `npm run dev`.
+В `.env` замените `JWT_SECRET` на длинную случайную строку.
+Для разработки с автоперезапуском: `npm run dev`.
 
-## Environment variables
+## Тесты
 
-| Variable     | Description                    | Default   |
-|--------------|--------------------------------|-----------|
-| `PORT`       | HTTP port                      | `3000`    |
-| `JWT_SECRET` | Secret used to sign JWT tokens | dev value |
-| `DB_PATH`    | SQLite database file           | `data.db` |
+```bash
+npm test
+```
+
+Тесты поднимают приложение на свободном порту и работают с временной базой данных,
+поэтому рабочие данные не затрагиваются. CI прогоняет их на Node 20, 22 и 24.
+
+## Переменные окружения
+
+| Переменная   | Назначение                     | По умолчанию |
+|--------------|--------------------------------|--------------|
+| `PORT`       | Порт HTTP-сервера              | `3000`       |
+| `JWT_SECRET` | Ключ для подписи токенов       | значение для разработки |
+| `DB_PATH`    | Файл базы данных SQLite        | `data.db`    |
+
+## API
+
+Все маршруты, кроме регистрации и входа, требуют заголовок `Authorization: Bearer <token>`.
+
+| Метод  | Путь                                     | Назначение                       |
+|--------|------------------------------------------|----------------------------------|
+| POST   | `/api/auth/register`, `/api/auth/login`  | Регистрация и вход               |
+| GET    | `/api/auth/me`                           | Профиль и статистика             |
+| PATCH  | `/api/auth/me`                           | Изменить имя                     |
+| POST   | `/api/auth/password`                     | Сменить пароль                   |
+| GET    | `/api/projects`                          | Список проектов                  |
+| POST   | `/api/projects`                          | Создать проект                   |
+| GET    | `/api/projects/my/tasks`                 | Мои задачи по всем проектам      |
+| GET    | `/api/projects/my/notifications`         | Сроки и лента событий            |
+| GET    | `/api/projects/:id`                      | Проект и состав команды          |
+| PATCH  | `/api/projects/:id`                      | Изменить проект                  |
+| POST   | `/api/projects/:id/archive`              | Архивировать или вернуть         |
+| POST   | `/api/projects/:id/invites`              | Создать ссылку-приглашение       |
+| POST   | `/api/projects/invite/:token/accept`     | Присоединиться по ссылке         |
+| POST   | `/api/projects/:id/members`              | Добавить участника по email      |
+| PATCH  | `/api/projects/:id/members/:uid`         | Изменить роль                    |
+| POST   | `/api/projects/:id/transfer/:uid`        | Передать права владельца         |
+| GET    | `/api/projects/:id/tasks`                | Задачи проекта                   |
+| POST   | `/api/projects/:id/tasks`                | Создать задачу                   |
+| PATCH  | `/api/projects/:id/tasks/:tid`           | Изменить задачу                  |
+| GET    | `/api/projects/:id/tasks/:tid/comments`  | Комментарии к задаче             |
+| GET    | `/api/projects/:id/messages`             | Обсуждение проекта               |
+| GET    | `/api/projects/:id/files`                | Файлы проекта                    |
+| GET    | `/api/projects/:id/activity`             | Лента активности                 |
+
+## Лицензия
+
+MIT

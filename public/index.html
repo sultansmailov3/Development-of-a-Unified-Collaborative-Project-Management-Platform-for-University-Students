@@ -2,13 +2,16 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="TeamWork — платформа для координации студенческих групповых проектов: задачи, канбан-доска, обсуждения и файлы в одном месте.">
+  <meta name="theme-color" content="#4f46e5">
   <title>TeamWork — командные проекты</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%234f46e5'/><text x='16' y='22' font-size='17' font-family='system-ui,sans-serif' font-weight='700' fill='white' text-anchor='middle'>T</text></svg>">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header><b>📚 TeamWork</b><span id="who"></span></header>
-  <main id="app"></main>
+  <div id="app"></div>
+  <div class="toasts" id="toasts"></div>
   <script src="app.js"></script>
 </body>
 </html>
